@@ -1,7 +1,7 @@
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct FindPos {
-    start: u32,
-    end: u32,
+    pub start: u32,
+    pub end: u32,
 }
 
 #[derive(Debug)]
@@ -10,7 +10,7 @@ pub enum CheckResult {
     Success{end: u32},
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum FindResult {
     Fail,
     Success{pos: Vec<FindPos>},
