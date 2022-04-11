@@ -4,19 +4,29 @@ pub struct FindPos {
     pub end: u32,
 }
 
-#[derive(Debug)]
-pub enum CheckResult {
-    Fail,
-    Success{end: u32},
+fn char_range(start: char, end: char) -> Option<Vec<char>>{
+    let chars = vec!['0','1','2','3','4','5','6','7','8','9',
+        'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+        'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+    if start.is_ascii_digit() && end.is_ascii_digit() {
+        let startpos = start.to_digit(10).unwrap();
+        let endpos = end.to_digit(10).unwrap()+1;
+        println!("{:?} {:?}",startpos,endpos);
+        return Some(chars[startpos as usize.. endpos as usize].to_vec())
+    } else if start.is_ascii_alphabetic() && end.is_ascii_alphabetic() {
+        if start.is_ascii_lowercase() && end.is_ascii_lowercase() {
+            let startpos = start.to_digit(36).unwrap();
+            let endpos = end.to_digit(36).unwrap()+1;
+            return Some(chars[startpos as usize.. endpos as usize].to_vec())
+        } else {
+            let startpos = start.to_digit(36).unwrap()+26;
+            let endpos = end.to_digit(36).unwrap()+27;
+            return Some(chars[startpos as usize.. endpos as usize].to_vec())
+        }
+    } else {return None}
 }
 
-#[derive(Debug, PartialEq)]
-pub enum FindResult {
-    Fail,
-    Success{pos: Vec<FindPos>},
-}
-
-pub fn check_at(find_str: String, regex: String, start_pos: u32, case_insensitive: bool) -> CheckResult{
+fn check_at(find_str: String, regex: String, start_pos: u32, case_insensitive: bool) -> Option<u32>{
     let strlist: Vec<char>;
     let rgxlist: Vec<char>;
     if case_insensitive {
@@ -31,17 +41,20 @@ pub fn check_at(find_str: String, regex: String, start_pos: u32, case_insensitiv
     let mut stri = 0;
 
     loop{
-        if rgxlist.get(rgxi) == None {return CheckResult::Success { end:stri as u32 + start_pos}}
-        if strlist.get(stri) == None {return CheckResult::Fail}
-        //TODO check if still works without ^^^
+        if rgxlist.get(rgxi) == None {return Some(stri as u32 + start_pos)}
         match rgxlist.get(rgxi) {
             Some(&'[') => {
                 let mut matchlist: Vec<char> = Vec::new();
+                let mut inverted = false;
                 loop{
                     rgxi +=1;
                     match rgxlist.get(rgxi) {
+                        None => return None,
                         Some(&']') => break,
-                        None => return CheckResult::Fail,
+                        Some(&'^') => {
+                            if matchlist.is_empty() {inverted = true;}
+                            else {matchlist.push('^')}
+                        },
                         _ => {
                             match rgxlist.get(rgxi+1) {
                                 Some(&'-') => {},
@@ -52,26 +65,24 @@ pub fn check_at(find_str: String, regex: String, start_pos: u32, case_insensitiv
                     }
                 }
                 rgxi +=1;
-                match matchlist.contains(&strlist[stri]) {
-                    true => stri+=1,
-                    false => return CheckResult::Fail
-                }
+                if matchlist.contains(&strlist[stri]) != inverted {stri+=1} 
+                else {return None}
             },
             None => {
-                if rgxlist.get(rgxi) == None {return CheckResult::Success { end:stri as u32 + start_pos}}
-                else {return CheckResult::Fail}
+                if rgxlist.get(rgxi) == None {return Some(stri as u32 + start_pos)}
+                else {return None}
             },
             _ => {
                 if strlist[stri] == rgxlist[rgxi] {
                     rgxi += 1;
                     stri += 1;
-                } else {return CheckResult::Fail}
+                } else {return None}
             },
         }
     }
 }
 
-pub fn find(find_str: String, regex: String, flagstr: String) -> FindResult {
+pub fn find(find_str: String, regex: String, flagstr: String) -> Option<Vec<FindPos>> {
     let flags: Vec<char> = flagstr.chars().collect();
 
     let mut i = 0;
@@ -80,12 +91,12 @@ pub fn find(find_str: String, regex: String, flagstr: String) -> FindResult {
     for _c in find_str.chars() {
         let checkres = check_at(find_str.clone(), regex.clone(), i, flags.contains(&'i'));
         match checkres {
-            CheckResult::Fail => {},
-            CheckResult::Success{ end: e } => res.push(FindPos{start:i, end: e-1})
+            None => {},
+            Some(e) => res.push(FindPos{start:i, end: e-1})
         };
         i += 1;
     }
-    if res.is_empty() {return FindResult::Fail}
-    if flags.contains(&'s') {return FindResult::Success { pos: vec![res[0]] }}
-    return FindResult::Success { pos: res }
+    if res.is_empty() {return None}
+    if flags.contains(&'s') {return Some(vec![res[0]])}
+    return Some(res)
 }
