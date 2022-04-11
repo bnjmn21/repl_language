@@ -1,5 +1,6 @@
-use regex::{Regex, Matches};
 use clap::Parser;
+
+mod regex;
 
 use std::io;
 use std::io::prelude::*;
@@ -13,25 +14,9 @@ struct Cli {
 }
 
 fn main() {
-    let args = Cli::parse();
-    let mut code_line = 0u32;
-
-    let mut isRunning = true;
-
-    while isRunning {
-        let mut file = File::open(&args.file).unwrap();
-        let mut filestr = String::new();
-        file.read_to_string(&mut filestr).unwrap();
-
-        let mut lines : Vec<&str>= filestr.lines().collect();
-        
-        if lines.get(code_line as usize) == None {code_line = 0}
-        else if lines[code_line as usize] == "SUCESS" {return}
-        else if lines[code_line as usize].starts_with('!') {
-            let checkx = Regex::new().unwrap();
-
-            fs::write(&args.file, );
-        }
-
-    }
+    //let args = Cli::parse();
+    let teststr = String::from("sussy baka lol");
+    let findstr = String::from("baka ");
+    let testres = regex::check_at(teststr, findstr, 6);
+    println!("{:?}", testres);
 }
