@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct FindPos {
     start: u32,
     end: u32,
@@ -8,12 +8,6 @@ pub struct FindPos {
 pub enum CheckResult {
     Fail,
     Success{end: u32},
-}
-
-#[derive(Debug)]
-pub enum FindResult {
-    Fail,
-    Success{pos: FindPos}
 }
 
 pub fn check_at(find_str: String, regex: String, start_pos: u32) -> CheckResult{
@@ -38,19 +32,22 @@ pub fn check_at(find_str: String, regex: String, start_pos: u32) -> CheckResult{
     }
 }
 
-pub fn find(find_str: String, regex: String, flagstr: String) -> FindResult {
+pub fn find(find_str: String, regex: String, flagstr: String) -> Vec<FindPos> {
     let flags: Vec<char> = flagstr.chars().collect();
 
     let mut i = 0;
-    let mut res = FindResult::Fail;
+    let mut res:Vec<FindPos> = Vec::new();
 
-    for c in find_str.chars() {
+    for _c in find_str.chars() {
         let checkres = check_at(find_str.clone(), regex.clone(), i);
         match checkres {
-            CheckResult::Fail => {res = res},
-            CheckResult::Success{ end: e } => res = FindResult::Success { pos: FindPos{start:i, end:e-1}}
+            CheckResult::Fail => {},
+            CheckResult::Success{ end: e } => res.push(FindPos{start:i, end: e-1})
         };
         i += 1;
     }
-    return res;
+    if flags.contains(&'s') {
+        if res.get(0) == None {return Vec::new()}
+        return vec![res[0]]}
+    return res
 }
