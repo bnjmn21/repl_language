@@ -102,6 +102,6 @@ pub fn find(find_str: String, regex: String, flagstr: String) -> Option<Vec<Find
         i += 1;
     }
     if res.is_empty() {return None}
-    if flags.contains(&'s') {return Some(vec![res[0]])}
+    if !flags.contains(&'g') {return Some(vec![res[0]])}
     return Some(res)
 }

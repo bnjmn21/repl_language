@@ -42,7 +42,7 @@ mod tests {
     fn simple_single_find_i() {
         let str1 = String::from("hello this Is me!");
         let str2 = String::from(" is ");
-        let str3 = String::from("i");
+        let str3 = String::from("gi");
         assert_eq!(regex::find(str1,str2,str3),
         Some(vec![regex::FindPos{start:10,end:13}]));
     }
@@ -51,16 +51,16 @@ mod tests {
     fn simple_find() {
         let str1 = String::from("hello this is me!");
         let str2 = String::from("is");
-        let str3 = String::from("");
+        let str3 = String::from("g");
         assert_eq!(regex::find(str1,str2,str3),
         Some(vec![regex::FindPos{start:8,end:9},regex::FindPos{start:11,end:12}]));
     }
 
     #[test]
-    fn simple_find_s() {
+    fn simple_find_single() {
         let str1 = String::from("hello this is me!");
         let str2 = String::from("is");
-        let str3 = String::from("s");
+        let str3 = String::from("");
         assert_eq!(regex::find(str1,str2,str3),
         Some(vec![regex::FindPos{start:8,end:9}]));
     }
@@ -69,7 +69,7 @@ mod tests {
     fn find_single_char_of() {
         let str1 = String::from("hello this is me!");
         let str2 = String::from("h[ei]");
-        let str3 = String::from("");
+        let str3 = String::from("g");
         assert_eq!(regex::find(str1,str2,str3),
         Some(vec![regex::FindPos{start:0,end:1},regex::FindPos{start:7,end:8}]));
     }
@@ -78,7 +78,7 @@ mod tests {
     fn find_single_char_of_not() {
         let str1 = String::from("hi! hi!xd hi!! hi!uwu");
         let str2 = String::from("hi![^ x]");
-        let str3 = String::from("");
+        let str3 = String::from("g");
         assert_eq!(regex::find(str1,str2,str3),
         Some(vec![regex::FindPos{start:10,end:13},regex::FindPos{start:15,end:18}]));
     }
@@ -87,7 +87,7 @@ mod tests {
     fn find_single_char_in_range() {
         let str1 = String::from("hckushabcuoiscabsaedfabduoi");
         let str2 = String::from("[a-c][b-d][b-e]");
-        let str3 = String::from("");
+        let str3 = String::from("g");
         assert_eq!(regex::find(str1,str2,str3),
             Some(vec![regex::FindPos{start:6,end:8},regex::FindPos{start:21,end:23}]));
     }
@@ -96,7 +96,7 @@ mod tests {
     fn find_single_char_not_in_range() {
         let str1 = String::from("abcatacbcbcata");
         let str2 = String::from("[^a-c]");
-        let str3 = String::from("");
+        let str3 = String::from("g");
         assert_eq!(regex::find(str1,str2,str3),
             Some(vec![regex::FindPos{start:4,end:4},regex::FindPos{start:12,end:12}]));
     }
@@ -105,7 +105,7 @@ mod tests {
     fn find_single_char_in_multi_range() {
         let str1 = String::from("abcdefg");
         let str2 = String::from("[a-ce-g]");
-        let str3 = String::from("");
+        let str3 = String::from("g");
         assert_eq!(regex::find(str1,str2,str3),
             Some(vec![regex::FindPos{start:0,end:0},regex::FindPos{start:1,end:1},regex::FindPos{start:2,end:2},regex::FindPos{start:4,end:4},regex::FindPos{start:5,end:5},regex::FindPos{start:6,end:6}]));
     }
