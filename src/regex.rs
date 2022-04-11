@@ -34,7 +34,7 @@ pub fn check_at(find_str: String, regex: String, start_pos: u32, case_insensitiv
         if rgxlist.get(rgxi) == None {return CheckResult::Success { end:stri as u32 + start_pos}}
         if strlist.get(stri) == None {return CheckResult::Fail}
         //TODO check if still works without ^^^
-        match strlist.get(stri) {
+        match rgxlist.get(rgxi) {
             Some(&'[') => {
                 let mut matchlist: Vec<char> = Vec::new();
                 loop{
@@ -46,12 +46,12 @@ pub fn check_at(find_str: String, regex: String, start_pos: u32, case_insensitiv
                             match rgxlist.get(rgxi+1) {
                                 Some(&'-') => {},
                                 None => {},
-                                _ => {matchlist.push(rgxlist[rgxi+1])}
+                                _ => {matchlist.push(rgxlist[rgxi])}
                             }
                         }
                     }
                 }
-                stri +=1;
+                rgxi +=1;
                 match matchlist.contains(&strlist[stri]) {
                     true => stri+=1,
                     false => return CheckResult::Fail
