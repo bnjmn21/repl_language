@@ -26,6 +26,19 @@ fn char_range(start: char, end: char) -> Option<Vec<char>>{
     } else {return None}
 }
 
+fn escape(c: String, escstart: u32) -> Option<char> {
+    match c.chars().collect::<Vec<char>>()[escstart as usize] {
+        'n' => return Some('\n'),
+        'r' => return Some('\r'),
+        't' => return Some('\t'),
+        '0' => return Some('\0'),
+        'x' => {
+            
+        }
+        _ => return None,
+    }
+}
+
 fn check_at(find_str: String, regex: String, start_pos: u32, case_insensitive: bool) -> Option<u32>{
     let strlist: Vec<char>;
     let rgxlist: Vec<char>;
