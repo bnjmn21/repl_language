@@ -89,7 +89,7 @@ mod tests {
         let str2 = String::from("[a-c][b-d][b-e]");
         let str3 = String::from("");
         assert_eq!(regex::find(str1,str2,str3),
-        Some(vec![regex::FindPos{start:7,end:9},regex::FindPos{start:14,end:16},regex::FindPos{start:22,end:24}]));
+            Some(vec![regex::FindPos{start:6,end:8},regex::FindPos{start:21,end:23}]));
     }
 
     #[test]
@@ -99,5 +99,14 @@ mod tests {
         let str3 = String::from("");
         assert_eq!(regex::find(str1,str2,str3),
             Some(vec![regex::FindPos{start:4,end:4},regex::FindPos{start:12,end:12}]));
+    }
+
+    #[test]
+    fn find_single_char_in_multi_range() {
+        let str1 = String::from("abcdefg");
+        let str2 = String::from("[a-ce-g]");
+        let str3 = String::from("");
+        assert_eq!(regex::find(str1,str2,str3),
+            Some(vec![regex::FindPos{start:0,end:0},regex::FindPos{start:1,end:1},regex::FindPos{start:2,end:2},regex::FindPos{start:4,end:4},regex::FindPos{start:5,end:5},regex::FindPos{start:6,end:6}]));
     }
 }

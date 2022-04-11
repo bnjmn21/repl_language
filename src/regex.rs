@@ -55,6 +55,11 @@ fn check_at(find_str: String, regex: String, start_pos: u32, case_insensitive: b
                             if matchlist.is_empty() {inverted = true;}
                             else {matchlist.push('^')}
                         },
+                        Some(&'-') => {
+                            if rgxlist.get(rgxi+1) == None {return None}
+                            matchlist.append(&mut char_range(rgxlist[rgxi-1],rgxlist[rgxi+1]).unwrap_or(Vec::new()));
+                            rgxi += 1;
+                        }
                         _ => {
                             match rgxlist.get(rgxi+1) {
                                 Some(&'-') => {},
