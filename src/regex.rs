@@ -10,6 +10,12 @@ pub enum CheckResult {
     Success{end: u32},
 }
 
+#[derive(Debug)]
+pub enum FindResult {
+    Fail,
+    Success{pos: Vec<FindPos>},
+}
+
 pub fn check_at(find_str: String, regex: String, start_pos: u32) -> CheckResult{
     let strlist: Vec<char> = find_str.split_at(start_pos as usize).1.chars().collect();
     let rgxlist: Vec<char> = regex.chars().collect();
@@ -32,7 +38,7 @@ pub fn check_at(find_str: String, regex: String, start_pos: u32) -> CheckResult{
     }
 }
 
-pub fn find(find_str: String, regex: String, flagstr: String) -> Vec<FindPos> {
+pub fn find(find_str: String, regex: String, flagstr: String) -> FindResult {
     let flags: Vec<char> = flagstr.chars().collect();
 
     let mut i = 0;
@@ -46,8 +52,7 @@ pub fn find(find_str: String, regex: String, flagstr: String) -> Vec<FindPos> {
         };
         i += 1;
     }
-    if flags.contains(&'s') {
-        if res.get(0) == None {return Vec::new()}
-        return vec![res[0]]}
-    return res
+    if res.is_empty() {return FindResult::Fail}
+    if flags.contains(&'s') {return FindResult::Success { pos: vec![res[0]] }}
+    return FindResult::Success { pos: res }
 }

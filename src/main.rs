@@ -18,8 +18,8 @@ struct Cli {
 fn main() {
     //let args = Cli::parse();
     let teststr = String::from("sussy baka lol");
-    let findstr = String::from("a");
-    let flags = String::from("");
+    let findstr = String::from("ahsdufip");
+    let flags = String::from("s");
     let testres = regex::find(teststr, findstr, flags);
     println!("{:?}", testres);
 }
